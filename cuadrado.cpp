@@ -1,14 +1,8 @@
-// Este programa demuestra el uso de doble buffer para una animación sin parpadeo.
-// Hace girar un cuadrado blanco sobre un fondo negro. Proviene del Capítulo 1
-// de la Guía de Programación de OpenGL, pero se han realizado algunos cambios menores
-// y la animación se ha implementado correctamente usando temporizadores en lugar de la función idle.
-// La animación comienza con el botón izquierdo del mouse y se detiene con el botón derecho.
-
-//#ifdef __APPLE_CC__
-//#include <GLUT/glut.h>
-//#else
+//En este programa se presenta un pentágono
+//que rota en su eje Z. Para lograr que la animación 
+//no tenga parpadeos ni distorsiones innesperadas
+//se utilizan 2 buffer
 #include <GL/glut.h>
-//#endif
 
 // Variable booleana para controlar si la animación está activa.
 static bool girando = true;
@@ -41,26 +35,31 @@ void reshape(GLint w, GLint h) {
   }
 }
 
-// Maneja el evento de renderizado de la ventana.
-// Primero, limpia la ventana, luego dibuja un cuadrado de 50x50 centrado en el origen 
-// y lo rota el número correcto de grados alrededor del eje <0,0,1>.
-// La función termina con 'glutSwapBuffers' porque el modo de visualización está configurado 
-// con doble buffer. Es necesario llamar a glutSwapBuffers() para mostrar lo que se ha dibujado.
 void display() {
+//Esta función limpia la pantalla del color del buffer
   glClear(GL_COLOR_BUFFER_BIT);
+//Inicializa la matriz 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+//La sintaxis de esta función nos dice que glrotatef
+//es tipo float, además nos pide 4 valores; el ángulo, 
+//el eje X, Y, Z. 
   glRotatef(anguloActualRotacion, 0.0, 0.0, 1.0);
+//se le asigna un color en la gama rojo, verde, azul. 
   glColor3f(1,0,0);
-  glBegin(GL_POLYGON);
-  
+//Declaramos el tipo de dibujado que queremos. 
+  glBegin(GL_POLYGON); 
+//Hacemos los vértices de la figura. 
   glVertex2i(-15.0, -15.0);
   glVertex2i(15.0, -15.0);
   glVertex2i(22.5, 11.25);
   glVertex2i(0.0, 27.5);
   glVertex2i(-22.5, 11.25);
+//cerramos el glbegin
   glEnd();
+//pintamos los vertices
   glFlush();
+//cambiamos de buffer o pantalla
   glutSwapBuffers();
 }
 
@@ -95,12 +94,17 @@ void mouse(int button, int state, int x, int y) {
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+// indica posición donde se desplegará la ventana
   glutInitWindowPosition(80, 80);
+// indica el tamaño o la resolución que tomará la ventana
   glutInitWindowSize(800, 500);
+// nombre que mostrará el marco de la ventana
   glutCreateWindow("Pentagono Giratorio Odlanyer");
+// las siguientes son llamadas a funciones anteriores
   glutReshapeFunc(reshape);
   glutDisplayFunc(display);
   glutTimerFunc(100, timer, 0);
   glutMouseFunc(mouse);
+// indica a la función Main ser un Loop
   glutMainLoop();
 }
